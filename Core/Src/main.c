@@ -54,7 +54,6 @@ static void MX_GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
 /* USER CODE END 0 */
 
 /**
@@ -95,9 +94,56 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-	  HAL_Delay(1000);
+
     /* USER CODE BEGIN 3 */
+    /* 发送 H = .... */
+	  HAL_Delay(3000);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(500);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(500);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(500);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(500);
+    /* 发送 Y = -.-- */
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(2000);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(500);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(500);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(2000);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(500);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(2000);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(500);
+    /* 发送 R = .-. */
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(500);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(2000);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(500);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	  HAL_Delay(500);
   }
   /* USER CODE END 3 */
 }
@@ -155,7 +201,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : LED_Pin */
   GPIO_InitStruct.Pin = LED_Pin;
