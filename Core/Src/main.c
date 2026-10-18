@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include<stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -40,6 +40,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
 
@@ -48,6 +49,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -85,8 +87,10 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-
+char hello[]="hello\r\n";
+HAL_UART_Transmit(&huart1,(uint8_t*)hello,sizeof(hello)-1,100);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -96,54 +100,13 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    /* 发送 H = .... */
-	  HAL_Delay(3000);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(1000);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(500);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(1000);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(500);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(1000);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(500);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(1000);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(500);
-    /* 发送 Y = -.-- */
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(2000);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(500);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(1000);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(500);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(2000);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(500);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(2000);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(500);
-    /* 发送 R = .-. */
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(1000);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(500);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(2000);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(500);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(1000);
-	  HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-	  HAL_Delay(500);
+	  if (HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin) == GPIO_PIN_RESET) {
+	        /* 按下：读到 0 → 灯亮（你的灯高电平点亮，SET=亮） */
+	        HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+	      } else {
+	        /* 松开：读到 1 → 灯灭 */
+	        HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+	      }
   }
   /* USER CODE END 3 */
 }
@@ -185,6 +148,39 @@ void SystemClock_Config(void)
 }
 
 /**
+  * @brief USART1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART1_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART1_Init 0 */
+
+  /* USER CODE END USART1_Init 0 */
+
+  /* USER CODE BEGIN USART1_Init 1 */
+
+  /* USER CODE END USART1_Init 1 */
+  huart1.Instance = USART1;
+  huart1.Init.BaudRate = 115200;
+  huart1.Init.WordLength = UART_WORDLENGTH_8B;
+  huart1.Init.StopBits = UART_STOPBITS_1;
+  huart1.Init.Parity = UART_PARITY_NONE;
+  huart1.Init.Mode = UART_MODE_TX_RX;
+  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART1_Init 2 */
+
+  /* USER CODE END USART1_Init 2 */
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -209,6 +205,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : KEY_Pin */
+  GPIO_InitStruct.Pin = KEY_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(KEY_GPIO_Port, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
