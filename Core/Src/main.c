@@ -91,6 +91,9 @@ int main(void)
   /* USER CODE BEGIN 2 */
 char hello[]="hello\r\n";
 HAL_UART_Transmit(&huart1,(uint8_t*)hello,sizeof(hello)-1,100);
+uint32_t count=0;
+GPIO_PinState last =HAL_GPIO_ReadPin(KEY_GPIO_Port,KEY_Pin);
+uint32_t last_print=0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -100,13 +103,14 @@ HAL_UART_Transmit(&huart1,(uint8_t*)hello,sizeof(hello)-1,100);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  if (HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin) == GPIO_PIN_RESET) {
-	        /* 按下：读到 0 → 灯亮（你的灯高电平点亮，SET=亮） */
-	        HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
-	      } else {
-	        /* 松开：读到 1 → 灯灭 */
-	        HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
-	      }
+	GPIO_PinState now=HAL_GPIO_ReadPin(KEY_GPIO_Port,KEY_Pin);
+	if(now!=last){count++;
+	last=now;}
+	if(HAL_GetTick()-last_print>=500){last_print=HAL_GetTick();
+	char msg[32];
+	int len=sprintf(msg,"count=%u\r\n",count);
+	HAL_UART_Transmit(&huart1,(uint8_t*)msg,len,100);
+	}
   }
   /* USER CODE END 3 */
 }
