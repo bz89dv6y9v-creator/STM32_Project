@@ -91,9 +91,9 @@ int main(void)
   /* USER CODE BEGIN 2 */
 char hello[]="hello\r\n";
 HAL_UART_Transmit(&huart1,(uint8_t*)hello,sizeof(hello)-1,100);
-uint32_t count=0;
+uint8_t mode=0;
 GPIO_PinState last =HAL_GPIO_ReadPin(KEY_GPIO_Port,KEY_Pin);
-uint32_t last_print=0;
+uint32_t last_blink=0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -104,12 +104,17 @@ uint32_t last_print=0;
 
     /* USER CODE BEGIN 3 */
 	GPIO_PinState now=HAL_GPIO_ReadPin(KEY_GPIO_Port,KEY_Pin);
-	if(now!=last){count++;
-	last=now;}
-	if(HAL_GetTick()-last_print>=500){last_print=HAL_GetTick();
+	if(now==GPIO_PIN_RESET && last==GPIO_PIN_SET){mode=(mode+1)%3;
 	char msg[32];
-	int len=sprintf(msg,"count=%u\r\n",count);
-	HAL_UART_Transmit(&huart1,(uint8_t*)msg,len,100);
+	int len =sprintf(msg,"MODE=%u\r\n,mode",mode);
+	HAL_UART_Transmit(&huart1,(uint8_t*)msg,len,100);}
+	last=now;
+	if(mode==0){HAL_GPIO_WritePin(LED_GPIO_Port,LED_Pin,GPIO_PIN_SET);}
+	else if (mode==1){if(HAL_GetTick()-last_blink>=500){last_blink=HAL_GetTick();
+	HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	}}else {if (HAL_GetTick()-last_blink>=100){last_blink=HAL_GetTick();
+	HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
+	}
 	}
   }
   /* USER CODE END 3 */
